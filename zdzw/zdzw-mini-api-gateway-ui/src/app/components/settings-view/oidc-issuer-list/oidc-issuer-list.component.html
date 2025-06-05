@@ -1,0 +1,81 @@
+<div class="table-container">
+
+    <mat-form-field class="filter-field" appearance="outline">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="ID or URL" #input>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    
+    <table mat-table [dataSource]="dataSource">
+    
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+    
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+    
+      <!-- Issuer Column -->
+      <ng-container matColumnDef="issuer">
+        <th mat-header-cell *matHeaderCellDef> Issuer URL </th>
+        <td mat-cell *matCellDef="let element"> {{element.issuer}} </td>
+      </ng-container>
+    
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="View and edit Issuer" matTooltip="View and edit" matTooltipShowDelay="500" (click)="edit(element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button aria-label="Delete Issuer" (click)="deleteSingle(element)" matTooltip="Delete" matTooltipShowDelay="500">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="bulk-actions">
+        <td mat-footer-cell *matFooterCellDef colspan="6" class="footer-actions">
+          <button class="actions-menu-button" mat-stroked-button [matMenuTriggerFor]="menu">Actions <mat-icon>more_vert</mat-icon></button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="deleteSelected()" [disabled]="selection.isEmpty()"><mat-icon>delete_outline</mat-icon>Delete</button>
+          </mat-menu>
+          <mat-paginator [pageSizeOptions]="[10, 20,50, 100]"
+                    showFirstLastButtons
+                    aria-label="Select page of displayed OpenID Connect Issuers">
+          </mat-paginator>
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td *ngIf="input.value" class="mat-cell centered-cell-text" colspan="5">No data matching the filter "{{input.value}}"</td>
+        <td *ngIf="!hasLoadedOnce" class="mat-cell centered-cell-text" colspan="5">Loading data...</td>
+        <td *ngIf="hasLoadedOnce" class="mat-cell centered-cell-text" colspan="5">No OpenID Connect Issuers found in the gateway</td>
+      </tr>
+    
+      <tr mat-footer-row *matFooterRowDef="['bulk-actions']"></tr>
+    </table>
+    
+    </div>
+    
+    <button class="add-route-button" mat-fab color="primary" aria-label="Add a new Issuer" (click)="edit(null)">
+      <mat-icon>add</mat-icon>
+    </button>

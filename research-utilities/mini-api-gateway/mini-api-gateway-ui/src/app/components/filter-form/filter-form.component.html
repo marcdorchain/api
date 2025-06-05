@@ -1,0 +1,162 @@
+<form [formGroup]="form" [ngSwitch]="type">
+    <ng-container *ngSwitchCase="filterType.EXTERNAL_CALL">
+        <div class="form-grid">
+            <div class="form-row">
+                <mat-form-field appearance="outline" class="method-select">
+                    <mat-label>Request Method</mat-label>
+                    <mat-select formControlName="method" required (selectionChange)="onChange()">
+                    @for (method of Object.values(requestMethods); track $index) {
+                          <mat-option [value]="method">{{method}}</mat-option>
+                    }
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Endpoint URL</mat-label>
+                    <input matInput type="url" placeholder="https://myservice.com/api"
+                        formControlName="uri"
+                        required
+                        (change)="onChange()">
+                </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline" *ngIf="[requestMethods.POST, requestMethods.PUT, requestMethods.PATCH].includes(getFormValue('method'))">
+                <mat-label>Request body</mat-label>
+                <textarea matInput
+                    formControlName="body"
+                    (change)="onChange()"></textarea>
+            </mat-form-field>
+
+            <h5>Request Headers</h5>
+            <ng-container *ngFor="let headerGroup of getFormArrayWithGroups('headers').controls; let i = index">
+                <div class="header-form-row" [formGroup]="headerGroup">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Header name</mat-label>
+                        <input matInput type="text" placeholder="Header name"
+                            formControlName="key"
+                            required
+                            (change)="onChange()">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" style="margin-left: 1%">
+                        <mat-label>Value</mat-label>
+                        <input matInput type="text" placeholder="Value"
+                            formControlName="value"
+                            required
+                            (change)="onChange()">
+                    </mat-form-field>
+                    <button mat-mini-fab color="warn" aria-label="Remove" (click)="removeKVField(getFormArrayWithGroups('headers'), i)">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+            <button class="header-add-button" mat-mini-fab color="primary" aria-label="Add" (click)="addKVField(getFormArrayWithGroups('headers'))">
+                <mat-icon>add</mat-icon>
+            </button>
+
+            <h5>Response Variable Mapping</h5>
+            <ng-container *ngFor="let headerGroup of getFormArrayWithGroups('responseMapping').controls; let i = index">
+                <div class="header-form-row" [formGroup]="headerGroup">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Target Variable / Mapping</mat-label>
+                        <input matInput type="text" placeholder="request.headers.Authorization"
+                            formControlName="key"
+                            required
+                            (change)="onChange()">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" style="margin-left: 1%">
+                        <mat-label>Source Variable / Value</mat-label>
+                        <input matInput type="text" placeholder="${externalCallResponse.payload.token}"
+                            formControlName="value"
+                            required
+                            (change)="onChange()">
+                    </mat-form-field>
+                    <button mat-mini-fab color="warn" aria-label="Remove" (click)="removeKVField(getFormArrayWithGroups('responseMapping'), i)">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+            <button class="header-add-button" mat-mini-fab color="primary" aria-label="Add" (click)="addKVField(getFormArrayWithGroups('responseMapping'))">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        
+    </ng-container>
+
+    <ng-container *ngSwitchCase="filterType.OAUTH2_CLIENT">
+        <div class="form-grid">
+            <mat-form-field appearance="outline">
+                <mat-label>Client ID</mat-label>
+                <input matInput type="text" placeholder="MyClient"
+                    formControlName="clientId"
+                    required
+                    (change)="onChange()">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Client Secret</mat-label>
+                <input matInput type="password" placeholder="MySecret"
+                    formControlName="clientSecret"
+                    required
+                    (change)="onChange()">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Issuer URL</mat-label>
+                <input matInput type="url" placeholder="https://mykeycloak.com/realms/my-realm"
+                    formControlName="issuerUrl"
+                    required
+                    (change)="onChange()">
+            </mat-form-field>
+        </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="filterType.SET_HEADERS">
+        <div class="form-grid">
+            <h4>Request Headers</h4>
+            <ng-container *ngFor="let headerGroup of getFormArrayWithGroups('headers').controls; let i = index">
+                <div class="header-form-row" [formGroup]="headerGroup">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Header name</mat-label>
+                        <input matInput type="text" placeholder="Header name"
+                            formControlName="key"
+                            required
+                            (change)="onChange()">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" style="margin-left: 1%">
+                        <mat-label>Value</mat-label>
+                        <input matInput type="text" placeholder="Value"
+                            formControlName="value"
+                            required
+                            (change)="onChange()">
+                    </mat-form-field>
+                    <button mat-mini-fab color="warn" aria-label="Remove" (click)="removeKVField(getFormArrayWithGroups('headers'), i)">
+                        <mat-icon>remove</mat-icon>
+                    </button>
+                </div>
+            </ng-container>
+            <button class="header-add-button" mat-mini-fab color="primary" aria-label="Add" (click)="addKVField(getFormArrayWithGroups('headers'))">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="filterType.REMOVE_REQUEST_HEADERS">
+        <div class="form-grid">
+            <h4>Remove Incoming Headers</h4>
+            <div class="basic-list">
+                <div *ngFor="let header of form.controls['headersToRemove'].value; let i = index;" class="basic-box removable">{{header}} <button type="button" mat-icon-button color="warn" (click)="form.controls['headersToRemove'].setValue(form.controls['headersToRemove'].value.toSpliced(i,1));onChange()"><mat-icon>delete</mat-icon></button></div>
+                <div class="basic-box" *ngIf="form.controls['headersToRemove'].value.length < 1">   Add headers to remove from incoming requests below</div>
+            </div>
+    
+
+            <div class="input-and-button-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Header name</mat-label>
+                    <input #headerInput matInput type="text" placeholder="Header name"
+                        enterkeyHint="enter"
+                        autofill="off"
+                        (keypress)="$event.key == 'Enter' ? addHeaderToRemove(headerInput) : {}">
+                </mat-form-field>
+                <button class="header-add-button" mat-mini-fab color="primary" aria-label="Add" (click)="addHeaderToRemove(headerInput)">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+        </div>
+    </ng-container>
+</form>

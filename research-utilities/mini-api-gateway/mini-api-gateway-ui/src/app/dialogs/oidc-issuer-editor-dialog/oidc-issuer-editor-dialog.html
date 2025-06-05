@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>{{data ? "Edit" : "Create"}} OpenID Connect Issuer</h2>
+<mat-dialog-content class="content">
+    <form [formGroup]="form">
+        <mat-form-field appearance="outline">
+            <mat-label>Issuer URL</mat-label>
+            <input matInput type="url" formControlName="issuer">
+        </mat-form-field>
+
+        <div>
+            <mat-label>Issuer Match Mode*: </mat-label>
+            <mat-button-toggle-group formControlName="matchMode" aria-label="Font Style">
+                <mat-button-toggle [value]="matchMode.FULL_MATCH">Full match</mat-button-toggle>
+                <mat-button-toggle [value]="matchMode.PREFIX_MATCH">Prefix match</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <mat-form-field appearance="outline">
+            <mat-label>Token Introspection Endpoint</mat-label>
+            <input matInput type="url" formControlName="tokenIntrospectionEndpoint">
+            <mat-hint><small>Only required, if not compliant with OpenID Connect scheme.</small></mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Token Introspection Client ID</mat-label>
+            <input matInput type="text" formControlName="clientId">
+            <mat-hint><small>Required if gateway is in Token Introspection mode.</small></mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Token Introspection Client Secret</mat-label>
+            <input matInput type="password" formControlName="clientSecret">
+            <mat-hint><small>Required if gateway is in Token Introspection mode.</small></mat-hint>
+        </mat-form-field>
+    </form>
+    
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false">Close</button>
+    <span class="spacer"></span>
+    <button mat-flat-button color="primary" [disabled]="form.invalid || !hasChanges()" (click)="save()">{{data ? "Save Changes" : "Create"}}</button>
+</mat-dialog-actions>

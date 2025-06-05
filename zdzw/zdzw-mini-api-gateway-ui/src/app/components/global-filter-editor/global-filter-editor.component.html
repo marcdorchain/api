@@ -1,0 +1,38 @@
+<div *ngIf="type == undefined" class="loading-screen">
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="type" class="editor">
+    <div class="header">
+        <div class="titles">
+            <h2 *ngIf="gfilter">{{gfilter.name}}</h2>
+            <mat-form-field *ngIf="!gfilter" appearance="outline" class="name-field">
+              <mat-label>Name</mat-label>
+              <input matInput type="text" placeholder="Unique name" [formControl]="form.controls.name">
+            </mat-form-field>
+        </div>
+        <span class="spacer"></span>
+        <div class="buttons">
+            <div [matTooltip]="form.valid ? 'No changes to save' : 'Configurations contains errors'" [matTooltipDisabled]="hasChanges() && form.valid">
+                <button (click)="saveChanges()" [disabled]="!hasChanges() || form.invalid" mat-flat-button color="primary">
+                    <mat-icon>save</mat-icon>
+                    Save changes
+                </button>
+            </div>
+            <button mat-stroked-button color="warn" class="delete-button" aria-label="Delete" (click)="delete()">
+              <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-drawer-container class="drawer-container" autosize>
+      <mat-drawer #drawer class="example-sidenav" mode="side" opened="true" disableClose="true">
+        <h3>Available filters</h3>
+        <app-filter-select mode="select" (select)="type = $event" [selection]="type" [expanded]="true"></app-filter-select>
+      </mat-drawer>
+    
+      <div class="sidenav-content">
+        <app-filter-form *recreateViewKey="type" [value]="gfilter?.filter" [control]="form.controls['filter']" [type]="type"></app-filter-form>
+      </div>
+    
+    </mat-drawer-container>
+</div>

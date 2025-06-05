@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Create new route</h2>
+<mat-dialog-content class="content">
+    <form [formGroup]="form">
+        <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Version</mat-label>
+            <input matInput type="text" formControlName="version">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Remote Endpoint</mat-label>
+            <input matInput type="url" formControlName="endpoint">
+        </mat-form-field>
+
+        <div class="divider-container">
+            <div class="divider-line"><mat-divider></mat-divider></div>
+            <div class="divider-text">OR</div>
+            <div class="divider-line"><mat-divider></mat-divider></div>
+          </div>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Specification</mat-label>
+            <textarea matInput formControlName="specification" rows="5"></textarea>
+            <mat-icon matPrefix>description</mat-icon>
+            <div>
+              <button mat-flat-button (click)="fileInput.click()"><mat-icon>upload</mat-icon>Load from file</button>
+              <input type="file" #fileInput accept=".yml,.yaml,.json,application/json,.txt" (change)="loadSpecificationFromFile($event)" style="display: none;">
+              <button mat-flat-button (click)="form.get('specification')?.reset()"><mat-icon>delete</mat-icon>Clear</button>
+            </div>
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+    </form>
+    
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false">Close</button>
+    <span class="spacer"></span>
+    <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="save()">Create</button>
+</mat-dialog-actions>

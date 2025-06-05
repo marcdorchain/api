@@ -1,0 +1,87 @@
+.header-form-row {
+    display: inline-table;
+}
+
+.header-form-row mat-form-field {
+    display: inline-block;
+    width: 44%;
+}
+
+.header-form-row p-button {
+    margin-left: 1%;
+    position: absolute;
+    margin-top: 8px;
+}
+
+.header-add-button {
+    margin-bottom: 12px;
+}
+
+.form-grid {
+    display: grid;
+}
+
+.form-row {
+    display: inline-flex;
+    width: 100%;
+}
+
+.form-row mat-form-field {
+    flex-grow: 1;
+}
+
+.form-row mat-form-field:not(:first-child) {
+    margin-left: 16px;
+}
+
+.method-select {
+    max-width: 30%;
+}
+
+.input-and-button-row {
+    display: grid;
+}
+
+.input-and-button-row mat-form-field {
+    grid-column-start: 1;
+    grid-column-end: 5;
+}
+
+.input-and-button-row button {
+    grid-column-start: 5;
+    grid-column-end: 5;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+}
+
+.basic-list {
+    border: solid 1px #ccc;
+    min-height: 30px;
+    margin: 15px 0;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    display: block;
+}
+  
+.basic-box {
+    padding: 20px 10px;
+    border-bottom: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    background: white;
+    font-size: 14px;
+}
+
+.basic-box:last-child {
+    border-bottom: none;
+}
+
+.basic-box.removable {
+    padding: 5px 0px 4px 10px;
+}

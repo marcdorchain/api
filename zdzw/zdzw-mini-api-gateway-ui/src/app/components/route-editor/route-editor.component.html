@@ -1,0 +1,144 @@
+<div *ngIf="route == undefined" class="loading-screen">
+    <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="route" class="editor">
+    <div class="header">
+        <div class="titles">
+            <h2>{{route.name}}</h2><h4>Version {{route.version}}</h4>
+            <!--<span>ID: {{route.id}}</span>-->
+        </div>
+        <span class="spacer"></span>
+        <div class="buttons">
+            <button mat-stroked-button (click)="toggleActivation()">
+                <mat-icon>{{route.active ? "pause_circle_outline" : "play_circle_outline"}}
+                </mat-icon>
+                {{route.active ? "Deactivate" : "Activate"}}
+            </button>
+            <div [matTooltip]="form.valid ? 'No changes to save' : 'Configurations contains errors'" [matTooltipDisabled]="hasChanges() && form.valid">
+                <button (click)="saveChanges()" [disabled]="!hasChanges() || form.invalid" mat-flat-button color="primary">
+                    <mat-icon>save</mat-icon>
+                    Save changes
+                </button>
+            </div>
+            <button mat-stroked-button color="warn" class="delete-button" aria-label="Delete" (click)="delete()">
+              <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+    </div>
+    <mat-tab-group>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">info</mat-icon>
+            Details
+          </ng-template>
+          <mat-divider></mat-divider>
+          <div class="tab-body">
+            <form class="details-form" [formGroup]="form">
+              <mat-form-field appearance="outline">
+                <mat-label>Remote Endpoint</mat-label>
+                <input matInput type="url" placeholder="https://myservice.com/api" formControlName="endpoint">
+                <mat-icon matPrefix>link</mat-icon>
+                @if (form.get('endpoint')?.invalid) {
+                  <mat-error>URL syntax is invalid. <a href="https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL" target="_blank">Learn more</a></mat-error>
+                }
+                <!--<mat-hint>Hint</mat-hint>-->
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Specification</mat-label>
+                <textarea matInput formControlName="specification" rows="5"></textarea>
+                <mat-icon matPrefix>description</mat-icon>
+                <div>
+                  <button mat-flat-button (click)="fileInput.click()"><mat-icon>upload</mat-icon>Load from file</button>
+                  <input type="file" #fileInput accept=".yml,.yaml,.json,application/json,.txt" (change)="loadSpecificationFromFile($event)" style="display: none;">
+                  <button mat-flat-button (click)="form.get('specification')?.reset()"><mat-icon>delete</mat-icon>Clear</button>
+                </div>
+                <!--<mat-hint>Hint</mat-hint>-->
+              </mat-form-field>
+
+              <mat-form-field *ngIf="route.active" appearance="outline">
+                <mat-label>Gateway Endpoint</mat-label>
+                <input matInput type="url" [value]="route.gatewayEndpoint" readonly="true">
+                <mat-icon matPrefix>public</mat-icon>
+                <mat-hint>Use this URL to access the route through the gateway</mat-hint>
+              </mat-form-field>
+            </form>
+          </div>
+        </mat-tab>
+      
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">filter_alt</mat-icon>
+            Filters
+          </ng-template>
+          <mat-divider></mat-divider>
+          <mat-drawer-container class="drawer-container" autosize>
+            <mat-drawer #drawer class="example-sidenav" mode="side" opened="true" disableClose="true">
+              <h3>Available filters</h3>
+              <app-filter-select mode="emit-only" (select)="addFilter($event)"></app-filter-select>
+            </mat-drawer>
+          
+            <div class="sidenav-content">
+              <mat-accordion cdkDropList (cdkDropListDropped)="reorderFilter($event)">
+                <mat-expansion-panel *ngFor="let control of form.controls['filters'].controls; let i = index" cdkDrag>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{routeFilterTypeName.get(control.value!.type)}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      <!-- Description? -->
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <app-filter-form [value]="control.value!" [control]="control" [type]="control.value!.type"></app-filter-form>
+                  <mat-action-row>
+                    <button mat-button color="warn" (click)="removeFilter(i)"><mat-icon>delete</mat-icon>Remove</button>
+                  </mat-action-row>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          
+          </mat-drawer-container>
+        </mat-tab>
+      
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">public</mat-icon>
+            Global Filters
+          </ng-template>
+          <mat-divider></mat-divider>
+          <div class="tab-body">
+            <div class="example-container">
+              <h2>Available filters</h2>
+            
+              <div
+                cdkDropList
+                cdkDropListSortingDisabled 
+                #availableList="cdkDropList"
+                [cdkDropListData]="availableGlobalFilters"
+                [cdkDropListConnectedTo]="[assignedList]"
+                class="example-list"
+                (cdkDropListDropped)="drop($event)">
+                @for (item of availableGlobalFilters; track item; ) {
+                  <div class="example-box" cdkDrag>{{item.name}}</div>
+                }
+              </div>
+            </div>
+            
+            <div class="example-container">
+              <h2>{{route.name}}</h2>
+            
+              <div
+                cdkDropList
+                #assignedList="cdkDropList"
+                [cdkDropListData]="form.controls['globalFilters'].value"
+                class="example-list"
+                (cdkDropListDropped)="drop($event)">
+                @for (item of form.controls['globalFilters'].value; track item) {
+                  <div class="example-box box-removable" cdkDrag>{{item}}<button mat-icon-button (click)="removeGlobalFilter($index)"><mat-icon>remove</mat-icon></button></div>
+                }
+                <span *ngIf="form.controls['globalFilters'].value?.length == 0">No global filters assigned to this route</span>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

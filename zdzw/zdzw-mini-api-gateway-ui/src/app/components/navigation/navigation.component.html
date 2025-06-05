@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+    <img id="logo" src="/ui/assets/Logo-ZDZW-min.png" alt="ZDZW Logo">
+    <span id="app-title">API Gateway</span>
+    <button *ngFor="let item of items" mat-button 
+        [ngClass]="rla.isActive ? 'mat-mdc-unelevated-button' : ''" 
+        [routerLink]="item.routerLink" 
+        routerLinkActive="active" #rla="routerLinkActive" >
+        {{item.label}}</button>
+    <span class="spacer"></span>
+    <ng-container *ngIf="!isAuthorizedByToken()">
+        <button mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>account_circle</mat-icon></button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="logout()"><mat-icon>logout</mat-icon>Logout</button>
+        </mat-menu>
+    </ng-container>
+    <dash-button *ngIf="isAuthorizedByToken()" [keycloakUri]="dynEnvironment.environment.KEYCLOAK_PUBLIC_URL" [clientId]="dynEnvironment.environment.KEYCLOAK_CLIENT_ID" [realm]="dynEnvironment.environment.KEYCLOAK_REALM" auth-method="login-required" show-post-login-text="false"></dash-button>
+</mat-toolbar>

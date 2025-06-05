@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  .example-tree .mat-tree-node:hover {
+    // Read the 500 hue from the primary color palette.
+    background-color: color-mix(in srgb, mat.get-theme-color($theme, primary) 5%, transparent);
+  }
+
+  .example-tree .selected-node {
+    background-color: mat.get-theme-color($theme, primary);
+    color: white !important;
+  }
+
+  .example-tree .selected-node:hover {
+    background-color: color-mix(in srgb, mat.get-theme-color($theme, primary) 80%, white);
+  }
+}
+
+@mixin theme($theme) {
+  @if mat.theme-has($theme, color) {
+    @include color($theme);
+  }
+}

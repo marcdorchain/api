@@ -1,0 +1,98 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@use './app/components/filter-select/filter-select.component-theme' as filter-select;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+$zdzw-palette-primary: (
+  50: #e7f7ee,
+  100: #c5ecd6,
+  200: #a0e0bc,
+  300: #77d4a1,
+  400: #55ca8c,
+  500: #2cc077,
+  600: #24b06c,
+  700: #1a9d5f,
+  800: #128c53,
+  900: #016c3d,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #ffffff,
+    900: #ffffff,
+  )
+);
+
+$zdzw-palette-accent : (
+  50: #f0f9e8,
+  100: #d9efc6,
+  200: #C0E4A1,
+  300: #a7d97c,
+  400: #95d060,
+  500: #83c745,
+  600: #73b73d,
+  700: #5fa333,
+  800: #4c8f2a,
+  900: #286c1a,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  )
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$mini-api-gateway-ui-primary: mat.define-palette($zdzw-palette-primary, 300);
+$mini-api-gateway-ui-accent: mat.define-palette($zdzw-palette-accent, 200);
+
+// The warn palette is optional (defaults to red).
+$mini-api-gateway-ui-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$mini-api-gateway-ui-theme: mat.define-light-theme((
+  color: (
+    primary: $mini-api-gateway-ui-primary,
+    accent: $mini-api-gateway-ui-accent,
+    warn: $mini-api-gateway-ui-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($mini-api-gateway-ui-theme);
+@include filter-select.theme($mini-api-gateway-ui-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body{
+  .mat-mdc-tooltip{
+    --mdc-plain-tooltip-supporting-text-size: 12px;
+    line-height: 12px;
+  }
+}

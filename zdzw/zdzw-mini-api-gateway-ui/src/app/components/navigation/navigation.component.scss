@@ -1,0 +1,34 @@
+.mat-mdc-unelevated-button {
+    padding: 0 var(--mat-text-button-horizontal-padding, 8px);
+}
+
+button.active {
+    background: #0003;
+    color: white;
+}
+
+mat-toolbar button {
+    margin: 0 5px;
+}
+
+mat-toolbar span:nth-child(1) {
+    margin-right: 10px;
+    font-family: Roboto, sans-serif;
+    font-size: 20px;
+    line-height: 32px;
+    font-weight: 500;
+    letter-spacing: .0125em;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+#logo {
+    height: 90%;
+}
+
+#app-title {
+    margin-right: 15px;
+    font-weight: 500;
+}

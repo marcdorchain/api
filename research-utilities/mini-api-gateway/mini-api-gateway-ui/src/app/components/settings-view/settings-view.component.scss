@@ -1,0 +1,15 @@
+.example-tab-icon {
+  margin-right: 8px;
+}
+
+.tab-body {
+    padding: 16px;
+}
+
+mat-tab-group {
+  height: calc(100% - 64px);
+}
+
+::ng-deep .mat-mdc-tab-body-wrapper {
+  height: 100%;
+}

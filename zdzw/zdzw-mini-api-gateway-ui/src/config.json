@@ -1,0 +1,6 @@
+{
+    "KEYCLOAK_PUBLIC_URL": "<ZDZW KEYCLOAK URL>",
+    "KEYCLOAK_CLIENT_ID": "web-app-interlinking",
+    "KEYCLOAK_REALM": "zdzw",
+    "KEYCLOAK_ROLE": "interlinking-user" 
+}

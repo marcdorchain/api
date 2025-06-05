@@ -1,0 +1,34 @@
+form {
+    display: grid;
+}
+
+.content {
+    min-width: 500px;
+    width: 50vw;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+mat-form-field:nth-of-type(3) {
+    margin-top: 24px;
+}
+
+.divider-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .divider-line {
+    flex: 1;
+  }
+  
+  .divider-text {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
